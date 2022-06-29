@@ -10,26 +10,19 @@ const pool = new Pool({
   port: "5432",
 });
 
-router.post("/postquestion", (req, res) => {
-  const { content, optionzero, optionone, salt } = req.body;
+router.post("/submitvote", (req, res) => {
+  const { address, option, unix, salt, qid } = req.body;
   pool.query(
-    `INSERT INTO question (content, optionzero, optionone, salt) VALUES ('${content}', '${optionzero}', '${optionone}', '${salt}');`,
+    `INSERT INTO votes (address, option, unix, salt, qid) VALUES ( '${address}', ${option}, '${unix}', '${salt}', ${qid});`,
     (err, res) => {
       if (err) {
         console.log(err);
         console.log("Question error");
         return;
       }
+      console.log("added to database");
     }
   );
-});
-
-router.post("/emergencyrepay", (req, res) => {
-  console.log(req.body);
-});
-
-router.post("/reveal", (req, res) => {
-  console.log(req.body);
 });
 
 module.exports = router;
