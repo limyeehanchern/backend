@@ -20,3 +20,17 @@ CREATE TABLE votes(
   foreignKey INTEGER,
   FOREIGN KEY (foreignKey) REFERENCES question ON DELETE CASCADE ON UPDATE CASCADE
 )
+
+
+//inserting votes
+INSERT INTO votes (address, option, unix, salt) VALUES (SELECT ${address}, ${option}, ${unix}, salt FROM question WHERE qid = ${qid})
+
+//inserting questions
+INSERT INTO question(content, optionZero, optionOne, salt) VALUES (${content}, ${optionZero}, ${optionOne}, ${salt})
+
+//get current question
+SELECT content, optionZero, optionOne FROM question WHERE qid = ${qid}
+
+//get historical question
+SELECT content, optionZero, optionOne, result FROM question WHERE qid != ${qid} ORDER BY qid DESC
+
