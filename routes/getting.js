@@ -36,7 +36,7 @@ router.get("/currentsalt", (req, res) => {
   });
 });
 
-router.get("/gethistory", (req, res) => {
+router.get("/history", (req, res) => {
   const { qid } = req.query;
   pool.query(
     `SELECT content, optionZero, optionOne, result FROM question WHERE qid != ${qid} ORDER BY qid DESC;`,
