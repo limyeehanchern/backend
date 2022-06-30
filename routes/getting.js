@@ -36,4 +36,18 @@ router.get("/currentsalt", (req, res) => {
   });
 });
 
+router.get("/gethistory", (req, res) => {
+  const { qid } = req.query;
+  pool.query(
+    `SELECT content, optionZero, optionOne, result FROM question WHERE qid != ${qid} ORDER BY qid DESC;`,
+    (err, tup) => {
+      if (err) {
+        console.log("Query error");
+        return;
+      }
+      res.status(201).send(tup.rows);
+    }
+  );
+});
+
 module.exports = router;

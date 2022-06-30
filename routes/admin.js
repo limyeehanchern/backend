@@ -29,7 +29,18 @@ router.post("/emergencyrepay", (req, res) => {
 });
 
 router.post("/reveal", (req, res) => {
-  console.log(req.body);
+  const { qid } = req.body;
+  pool.query(
+    `SELECT address, option, unix, salt FROM votes WHERE qid = ${qid};`,
+    (err, res) => {
+      if (err) {
+        console.log(err);
+        console.log("Question error");
+        return;
+      }
+      res.status(201).send(tup.rows);
+    }
+  );
 });
 
 module.exports = router;
