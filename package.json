@@ -1,0 +1,31 @@
+{
+  "name": "limmy-backend",
+  "version": "1.0.0",
+  "description": "backend",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/limyeehanchern/backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/limyeehanchern/backend/issues"
+  },
+  "homepage": "https://github.com/limyeehanchern/backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "pgtools": "^0.3.2",
+    "web3": "^1.7.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
