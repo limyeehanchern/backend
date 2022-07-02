@@ -19,6 +19,7 @@
   "homepage": "https://github.com/limyeehanchern/backend#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "pg": "^8.7.3",
     "pgtools": "^0.3.2",

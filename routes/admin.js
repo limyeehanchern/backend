@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const web3 = require("../web3");
 const pool = require("./pool");
+require("dotenv").config();
 
 router.post("/postquestion", (req, res) => {
   const { content, optionzero, optionone, salt } = req.body;
@@ -17,21 +18,8 @@ router.post("/postquestion", (req, res) => {
   );
 });
 
-router.post("/emergencyrepay", (req, res) => {
-  console.log(req.body);
-});
-
-router.post("/reveal", (req, res) => {
-  const { password, qid } = req.body;
-  if (password != "password") {
-    console.log("wrong password");
-    res.sendStatus(401);
-    return;
-  }
-
+function updateResults(qid) {
   let result;
-  console.log("qid is: " + qid);
-
   pool.query(
     `SELECT (SELECT COUNT(*) as res FROM votes WHERE qid =  ${qid} AND OPTION = 0)*100/COUNT(*) FROM votes WHERE qid = ${qid}`,
     (err, tup) => {
@@ -53,6 +41,22 @@ router.post("/reveal", (req, res) => {
       );
     }
   );
+}
+
+router.post("/emergencyrepay", (req, res) => {
+  const { qid } = req.body;
+  updateResults(qid);
+});
+
+router.post("/reveal", (req, res) => {
+  const { password, qid } = req.body;
+  if (password != process.env.PASSWORD) {
+    console.log("wrong password");
+    res.sendStatus(401);
+    return;
+  }
+
+  updateResults(qid);
 
   pool.query(
     `SELECT address, option, unix, salt FROM votes WHERE qid = ${qid};`,
@@ -62,7 +66,6 @@ router.post("/reveal", (req, res) => {
         console.log("Question error");
         return;
       }
-      console.log(tup.rows);
       res.status(201).send(tup.rows);
     }
   );
