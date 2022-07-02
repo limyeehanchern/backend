@@ -1,14 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const Pool = require("pg").Pool;
-
-const pool = new Pool({
-  user: "postgres",
-  host: "127.0.0.1",
-  database: "limmy",
-  password: "password",
-  port: "5432",
-});
+const web3 = require("../web3");
+const pool = require("./pool");
 
 router.post("/postquestion", (req, res) => {
   const { content, optionzero, optionone, salt } = req.body;
@@ -29,15 +22,47 @@ router.post("/emergencyrepay", (req, res) => {
 });
 
 router.post("/reveal", (req, res) => {
-  const { qid } = req.body;
+  const { password, qid } = req.body;
+  if (password != "password") {
+    console.log("wrong password");
+    res.sendStatus(401);
+    return;
+  }
+
+  let result;
+  console.log("qid is: " + qid);
+
+  pool.query(
+    `SELECT (SELECT COUNT(*) as res FROM votes WHERE qid =  ${qid} AND OPTION = 0)*100/COUNT(*) FROM votes WHERE qid = ${qid}`,
+    (err, tup) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      result = Object.values(tup.rows[0])[0];
+
+      pool.query(
+        `UPDATE question SET result =(${result}) where qid = ${qid};`,
+        (err, res) => {
+          if (err) {
+            console.log(err);
+            console.log("Question error");
+            return;
+          }
+        }
+      );
+    }
+  );
+
   pool.query(
     `SELECT address, option, unix, salt FROM votes WHERE qid = ${qid};`,
-    (err, res) => {
+    (err, tup) => {
       if (err) {
         console.log(err);
         console.log("Question error");
         return;
       }
+      console.log(tup.rows);
       res.status(201).send(tup.rows);
     }
   );

@@ -1,14 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Pool = require("pg").Pool;
-
-const pool = new Pool({
-  user: "postgres",
-  host: "127.0.0.1",
-  database: "limmy",
-  password: "password",
-  port: "5432",
-});
+const pool = require("./pool");
 
 router.get("/currentquestion", (req, res) => {
   const { qid } = req.query;
@@ -39,9 +31,10 @@ router.get("/currentsalt", (req, res) => {
 router.get("/history", (req, res) => {
   const { qid } = req.query;
   pool.query(
-    `SELECT content, optionZero, optionOne, result FROM question WHERE qid != ${qid} ORDER BY qid DESC;`,
+    `SELECT content, optionZero, optionOne, result FROM question WHERE qid < ${qid} ORDER BY qid DESC;`,
     (err, tup) => {
       if (err) {
+        console.log(err);
         console.log("Query error");
         return;
       }

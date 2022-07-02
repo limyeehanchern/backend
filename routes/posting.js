@@ -1,14 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Pool = require("pg").Pool;
-
-const pool = new Pool({
-  user: "postgres",
-  host: "127.0.0.1",
-  database: "limmy",
-  password: "password",
-  port: "5432",
-});
+const pool = require("./pool");
 
 router.post("/submitvote", (req, res) => {
   const { address, option, unix, salt, qid } = req.body;
